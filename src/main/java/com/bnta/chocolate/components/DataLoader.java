@@ -28,17 +28,30 @@ public class DataLoader implements ApplicationRunner {
 
 //        ESTATES
         List<String> rawEcuadorEstates = Arrays.asList(
-                "Ecuador estate 1",
-                "Ecuador estate 2",
-                "Ecuador estate 3",
-                "Ecuador estate 4"
+                "Hacienda San Jose",
+                "Hacienda Limon",
+                "Hacienda Victoria",
+                "Hacienda La Victoria",
+                "Hacienda La Chola",
+                "Hacienda Monte Alto",
+                "Hacienda El Castillo",
+                "Hacienda Rio Verde",
+                "Hacienda La Victoria",
+                "Hacienda San Nicolas"
         );
         List<String> rawStLuciaEstates = Arrays.asList(
-                "St Lucia estate 1",
-                "St Lucia estate 2",
-                "St Lucia estate 3",
-                "St Lucia estate 4"
+                "The Rabot Estate",
+                "Marquis Estate",
+                "Anse Mamin Plantation",
+                "Emerald Estate",
+                "Morne Coubaril Estate",
+                "La Dauphine Estate"
         );
+        List<String> rawGrenadaEstates = Arrays.asList(
+                "Belmont Estate",
+                "Crayfish Bay Organic Cocoa Estates"
+        );
+
         for (String rawEstate : rawEcuadorEstates) {
             Estate estate = new Estate(rawEstate, "Ecuador");
             estateRepository.save(estate);
@@ -47,14 +60,24 @@ public class DataLoader implements ApplicationRunner {
             Estate estate = new Estate(rawEstate, "St Lucia");
             estateRepository.save(estate);
         }
+        for (String rawEstate : rawGrenadaEstates) {
+            Estate estate = new Estate(rawEstate, "Grenada");
+            estateRepository.save(estate);
+        }
 
 
 //          CHOCOLATES
         List<String> rawChocolates = Arrays.asList(
-                "chocolate type 1",
-                "chocolate type 2",
-                "chocolate type 3",
-                "chocolate type 4"
+                "Dark Milk Original",
+                "Dark Milk Hazelnut ",
+                "Dark Milk Orange",
+                "Dark Salted Caramel",
+                "Dark Original",
+                "Milk Original",
+                "Milk Caramel",
+                "Milk Fruit and Nut",
+                "Ruby",
+                "White"
         );
 
 //      random estates and percentages of cocoa for when generating chocolates
@@ -63,12 +86,20 @@ public class DataLoader implements ApplicationRunner {
         Long numberOfEstates = estateRepository.count();
         Long randomEstateIndex;
 
-        int randomPercentageOfCocoa;
+        int randomPercentageOfCocoa = 0;
 
 //      generating chocolates
         for (String rawChocolate : rawChocolates) {
             randomEstateIndex = random.nextLong(numberOfEstates);
-            randomPercentageOfCocoa = random.nextInt(60, 90);
+            if(rawChocolate.toLowerCase().contains("dark milk")) {
+                randomPercentageOfCocoa = random.nextInt(55, 70);
+            } else if (rawChocolate.toLowerCase().contains("dark")) {
+                randomPercentageOfCocoa = random.nextInt(70, 90);
+            } else if (rawChocolate.toLowerCase().contains("milk") || rawChocolate.toLowerCase().contains("ruby")) {
+                randomPercentageOfCocoa = random.nextInt(35, 55);
+            } else {
+                randomPercentageOfCocoa = 0;
+            }
             Chocolate chocolate = new Chocolate(rawChocolate, randomPercentageOfCocoa, estateRepository.findById(randomEstateIndex).get());
             chocolateRepository.save(chocolate);
         }
